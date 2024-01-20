@@ -24,6 +24,11 @@ app.get('/download', async (req, res) => {
 
     providers[mainDomain].get(url).then(data => {
         res.send(data)
+    }).catch(err => {
+        res.status(500).send({
+            success: false,
+            message: err.message
+        })
     })
 })
 
