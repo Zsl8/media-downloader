@@ -2,6 +2,7 @@ const { Instagram, Youtube, Tiktok } = require('./media')
 const app = require('express')()
 const bodyParser = require("body-parser");
 const { parse } = require('url');
+const { isValidUrl } = require('./utils/functions');
 
 app.use(bodyParser.json());
 app.listen(3000)
@@ -32,15 +33,9 @@ app.get('/download', async (req, res) => {
     })
 })
 
-
-const isValidUrl = urlString => {
-    try {
-        const fccUrl = new URL(urlString)
-        
-        return Boolean(fccUrl.host || fccUrl.hostname)
-    } catch {
-        return false
-    }
-}
-
-isValidUrl()
+app.get('*', (req, res) => {
+    res.json({
+        success: false,
+        message: 'invalid endpoint'
+    })
+})
