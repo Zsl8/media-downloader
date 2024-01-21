@@ -1,33 +1,23 @@
-let y2mate;
-
-async function tst() {
-    y2mate = new (await import('y2mate-api')).Y2MateClient()
-}
-
-tst()
+const ytdl = require('ytdl-core');
 
 class Youtube {
     async get(url) {
         return new Promise(async (resolve, reject) => {
-			const result = await y2mate.getFromURL(url, 'vi');
-			if (result.page == 'detail') {
-				url = await result.linksVideo.get('auto').fetch();
-			} else if (result.page == 'playlist') {
-				let video = await result.videos[0].fetch();
-				url = await video.linksVideo.get('auto').fetch();
-			}
-			url = url.downloadLink;
-
-            if(url) {
-                resolve({
+            const info = await ytdl.getInfo(url);
+            const format = ytdl.chooseFormat(info.formats, { quality: 'highest', filter: 'audioandvideo' });
+            if (format) {
+                return resolve({
                     success: true,
-                    data: url
-                })
+                    data: format.url
+                });
             } else {
-                reject("Can't find this video")
+                return reject({
+                    success: false,
+                    message: 'Invalid URL'
+                });
             }
         })
     }
 }
 
-module.exports = Youtube
+module.exports = Youtube;
