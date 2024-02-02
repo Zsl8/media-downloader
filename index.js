@@ -17,9 +17,9 @@ app.get('/download', async (req, res) => {
     let { url } = req.query
     if(!url || !isValidUrl(url)) return res.send({ success: false, message: 'invaild url' })
 
-    const parsedUrl = parse(url);
-    const hostParts = parsedUrl.hostname.split('.');
-    const mainDomain = hostParts.slice(-2, -1).join('');
+    let parsedUrl = parse(url);
+    let hostParts = parsedUrl.hostname.split('.');
+    let mainDomain = hostParts.slice(-2, -1).join('');
 
     if(mainDomain === 'youtu') mainDomain = 'youtube'
 
