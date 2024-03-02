@@ -26,10 +26,13 @@ class Poppeteer {
 
     async get(url, type) {
         let page = await this.browser.newPage()
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 5.1; rv:5.0) Gecko/20100101 Firefox/5.0')
+        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/110.0')
 
         if (type === 'instagram') {
             await page.goto(this.instagram)
+
+            await this.bypassConstant(page)
+
             await page.waitForSelector("#url")
             await page.type("#url", url)
 
@@ -53,6 +56,14 @@ class Poppeteer {
             return urls.length > 0 ? urls.length === 1 ? urls[0] : urls : null
         } else {
             // for later
+        }
+    }
+
+    async bypassConstant(page) {
+        const consentButton = await page.$('.fc-cta-consent');
+
+        if (consentButton !== null) {
+            await consentButton.click();
         }
     }
 }
