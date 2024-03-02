@@ -31,7 +31,7 @@ class Poppeteer {
         if (type === 'instagram') {
             await page.goto(this.instagram)
 
-            await this.bypassConstant(page)
+            await this.bypassConsent(page)
 
             await page.waitForSelector("#url")
             await page.type("#url", url)
@@ -59,7 +59,7 @@ class Poppeteer {
         }
     }
 
-    async bypassConstant(page) {
+    async bypassConsent(page) {
         const consentButton = await page.$('.fc-cta-consent');
 
         if (consentButton !== null) {
