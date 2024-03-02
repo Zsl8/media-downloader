@@ -15,8 +15,8 @@ router.get('/', async (req, res) => {
     let mainDomain = getMainDomain(url)
 
     providers[mainDomain].get(url, req.puppeteer).then(data => {
-        if(urlOnly === 'true') return res.send(data.url)
-        
+        if(urlOnly === 'true') return res.send(data.data)
+
         res.send(data)
     }).catch(err => {
         res.status(500).send({
