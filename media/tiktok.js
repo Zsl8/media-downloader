@@ -4,12 +4,19 @@ const TikTokScraper = new TTScraper();
 class TickTok {
     get(url) {
         return new Promise(async (resolve, reject) => {
-            TikTokScraper.noWaterMark(url).then((data) => {
-                resolve({
-                    success: true,
-                    data: data
+            try {
+                TikTokScraper.noWaterMark(url).then((data) => {
+                    resolve({
+                        success: true,
+                        data: data
+                    })
                 })
-            })
+            } catch (error) {
+                return reject({
+                    success: false,
+                    message: 'Invalid URL'
+                });
+            }
         })
     }
 }

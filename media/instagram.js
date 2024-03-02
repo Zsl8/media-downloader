@@ -5,17 +5,24 @@ class Instagram {
         let type = this.getType(url)
 
         return new Promise(async (resolve, reject) => {
-            if (type === 'stories') {
-                this.getStory(url).then(data => {
-                    resolve(data)
-                })
-            } else {
-                let data = await puppeteer.get(url, 'instagram')
-
-                resolve({
-                    success: true,
-                    data
-                })
+            try {
+                if (type === 'stories') {
+                    this.getStory(url).then(data => {
+                        resolve(data)
+                    })
+                } else {
+                    let data = await puppeteer.get(url, 'instagram')
+    
+                    resolve({
+                        success: true,
+                        data
+                    })
+                }
+            } catch (error) {
+                return reject({
+                    success: false,
+                    message: 'Invalid URL'
+                });
             }
         })
     }
