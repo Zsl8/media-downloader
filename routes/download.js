@@ -9,12 +9,14 @@ let providers = {
 }
 
 router.get('/', async (req, res) => {
-    let { url } = req.query
+    let { url, urlOnly } = req.query
     if(!url || !isValidUrl(url)) return res.send({ success: false, message: 'invaild url' })
 
     let mainDomain = getMainDomain(url)
 
     providers[mainDomain].get(url, req.puppeteer).then(data => {
+        if(urlOnly === 'true') return res.send(data.url)
+        
         res.send(data)
     }).catch(err => {
         res.status(500).send({
