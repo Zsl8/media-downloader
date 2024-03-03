@@ -1,11 +1,12 @@
 const router = require('express').Router()
-const { Instagram, Youtube, Tiktok } = require('../media')
+const { Instagram, Youtube, Tiktok, Other } = require('../media')
 const { isValidUrl, getMainDomain } = require('../utils/functions')
 
 let providers = {
     'youtube': new Youtube(),
     'instagram': new Instagram(),
     'tiktok': new Tiktok(),
+    'other': new Other()
 }
 
 router.get('/', async (req, res) => {
@@ -13,6 +14,8 @@ router.get('/', async (req, res) => {
     if(!url || !isValidUrl(url)) return res.send({ success: false, message: 'invaild url' })
 
     let mainDomain = getMainDomain(url)
+
+    if(!providers[mainDomain]) mainDomain = 'other'
 
     providers[mainDomain].get(url, req.puppeteer).then(data => {
         if(urlOnly === 'true') return res.send(data.data)
