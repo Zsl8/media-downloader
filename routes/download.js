@@ -11,16 +11,23 @@ let providers = {
 
 router.get('/', async (req, res) => {
     let { url, urlOnly } = req.query
-    if(!url || !isValidUrl(url)) return res.send({ success: false, message: 'invaild url' })
+    if (!url || !isValidUrl(url)) return res.send({ success: false, message: 'invaild url' })
 
     let mainDomain = getMainDomain(url)
 
-    if(!providers[mainDomain]) mainDomain = 'other'
+    if (!providers[mainDomain]) mainDomain = 'other'
 
     providers[mainDomain].get(url, req.puppeteer).then(data => {
-        if(urlOnly === 'true') return res.send(data.data)
+        if (data.data) {
+            if (urlOnly === 'true') return res.send(data.data)
 
-        res.send(data)
+            res.send(data)
+        } else {
+            res.status(500).send({
+                success: false,
+                message: 'No media found'
+            })
+        }
     }).catch(err => {
         res.status(500).send({
             success: false,
