@@ -36,8 +36,8 @@ class Instagram {
             } else if (result && result.image_versions2) {
                 return { success: true, data: result.image_versions2.candidates[0].url }
             }
-        }).catch(err => {
-            return { success: false, message: err.message }
+        }).catch(error => {
+            return { success: false, message: error.message }
         })
     }
 

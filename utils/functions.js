@@ -1,3 +1,6 @@
+require('dotenv').config()
+
+const axios = require('axios').default
 const { parse } = require('url')
 
 const isValidUrl = urlString => {
@@ -20,7 +23,30 @@ const getMainDomain = url => {
     return mainDomain
 }
 
+const shortURL = url => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let response = await axios.post('https://i8.ae/api/url/add', {
+                url: url
+            }, {
+                headers: {
+                    'Authorization': 'Bearer ' + process.env.I8_API_KEY
+                }
+            })
+
+            if(response.data.error) {
+                reject(response.data.error)
+            } else {
+                resolve(response.data.shorturl)
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     isValidUrl,
-    getMainDomain
+    getMainDomain,
+    shortURL
 }

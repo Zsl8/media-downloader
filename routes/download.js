@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const { Instagram, Youtube, Tiktok, Other } = require('../media')
-const { isValidUrl, getMainDomain } = require('../utils/functions')
+const { isValidUrl, getMainDomain, shortURL } = require('../utils/functions')
 
 let providers = {
     'youtube': new Youtube(),
@@ -10,28 +10,32 @@ let providers = {
 }
 
 router.get('/', async (req, res) => {
-    let { url, urlOnly } = req.query
+    let { url, onlyUrl, shortUrl } = req.query
     if (!url || !isValidUrl(url)) return res.send({ success: false, message: 'invaild url' })
 
     let mainDomain = getMainDomain(url)
 
     if (!providers[mainDomain]) mainDomain = 'other'
 
-    providers[mainDomain].get(url, req.puppeteer).then(data => {
-        if (data.data) {
-            if (urlOnly === 'true') return res.send(data.data)
+    providers[mainDomain].get(url, req.puppeteer).then(async response => {
+        if (response.data) {
+            if(shortUrl === 'true') {
+                response.data = await shortURL(response.data)
+            }
 
-            res.send(data)
+            if (onlyUrl === 'true') return res.send(response.data)
+
+            res.send(response)
         } else {
             res.status(500).send({
                 success: false,
                 message: 'No media found'
             })
         }
-    }).catch(err => {
+    }).catch(error => {
         res.status(500).send({
             success: false,
-            message: err.message
+            message: error.message
         })
     })
 })
