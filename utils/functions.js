@@ -45,8 +45,19 @@ const shortURL = url => {
     })
 }
 
+const handleMultipleShortUrls = async urls => {
+    let shortUrls = []
+
+    for (let url of urls) {
+        shortUrls.push(await shortURL(url))
+    }
+
+    return shortUrls
+}
+
 module.exports = {
     isValidUrl,
     getMainDomain,
-    shortURL
+    shortURL,
+    handleMultipleShortUrls
 }

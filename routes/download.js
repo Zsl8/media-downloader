@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const { Instagram, Youtube, Tiktok, Other } = require('../media')
-const { isValidUrl, getMainDomain, shortURL } = require('../utils/functions')
+const { isValidUrl, getMainDomain, shortURL, handleMultipleShortUrls } = require('../utils/functions')
 
 let providers = {
     'youtube': new Youtube(),
@@ -20,7 +20,11 @@ router.get('/', async (req, res) => {
     providers[mainDomain].get(url, req.puppeteer).then(async response => {
         if (response.data) {
             if(shortUrl === 'true') {
-                response.data = await shortURL(response.data)
+                if(Array.isArray(response.data)) {
+                    response.data = await handleMultipleShortUrls(response.data)
+                } else {
+                    response.data = await shortURL(response.data)
+                }
             }
 
             if (onlyUrl === 'true') return res.send(response.data)
