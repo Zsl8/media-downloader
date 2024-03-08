@@ -14,13 +14,17 @@ const isValidUrl = urlString => {
 }
 
 const getMainDomain = url => {
-    let parsedUrl = parse(url)
+    try {
+        let parsedUrl = parse(url)
     let hostParts = parsedUrl.hostname.split('.')
     let mainDomain = hostParts.slice(-2, -1).join('')
 
     if(mainDomain === 'youtu') mainDomain = 'youtube'
 
     return mainDomain
+    } catch {
+        return 'other'
+    }
 }
 
 const shortURL = url => {
